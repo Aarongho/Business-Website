@@ -221,6 +221,18 @@ td.r,th.r{text-align:right}
 .sheet-actions button{flex:1;border-radius:14px;padding:14px;font-weight:800;font-size:15px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
 .sheet-actions .ok{border:none;color:#fff;background:linear-gradient(135deg,var(--brand),var(--brand-2))}
 
+/* login */
+.loginwrap{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--bg)}
+.loginwrap[hidden]{display:none}
+.login-card{width:100%;max-width:380px;background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:32px 24px;box-shadow:var(--shadow);text-align:center;animation:fadeUp .4s ease both}
+.login-card .mark{display:grid;margin:0 auto 16px;width:46px;height:46px}
+.login-card h2{margin:0 0 4px;font-size:22px}
+.login-card p{margin:0 0 22px;color:var(--muted);font-size:13.5px}
+.login-card input{margin-bottom:12px;text-align:left}
+.login-card .btn-brand{margin-top:6px}
+.btn-logout{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:700;font-size:13px;cursor:pointer}
+.btn-logout:hover{border-color:var(--brand);color:var(--brand)}
+
 /* toast */
 #toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(30px);background:#111827;color:#fff;padding:14px 22px;border-radius:14px;font-weight:700;font-size:14px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.3s;z-index:200;max-width:90vw}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
@@ -248,6 +260,7 @@ td.r,th.r{text-align:right}
       <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 15L12 8l3 3 4-6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 5h4v4" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="wm">Maju Terus Maju</span>
       <span class="sp"></span>
+      <button id="lg-out" class="btn-logout" hidden onclick="logout()">Keluar</button>
       <span id="tgl-home"></span>
     </div>
     <div class="lp-main">
@@ -400,10 +413,24 @@ td.r,th.r{text-align:right}
   </div>
 </div>
 
+<!-- login overlay (mode cloud) -->
+<div class="loginwrap" id="login" hidden>
+  <div class="login-card">
+    <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 15L12 8l3 3 4-6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 5h4v4" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    <h2>Maju Terus Maju</h2>
+    <p>Masuk untuk mengakses data penjualan.</p>
+    <input id="lg-email" type="email" autocomplete="username" placeholder="Email" />
+    <input id="lg-pass" type="password" autocomplete="current-password" placeholder="Password" />
+    <button id="lg-btn" class="btn-brand" onclick="doLogin()">Masuk</button>
+    <div class="err" id="lg-err" style="text-align:center"></div>
+  </div>
+</div>
+
 <div id="toast"></div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script src="products.js"></script>
 <script src="db.js"></script>
@@ -481,7 +508,31 @@ window.addEventListener("load",()=>{
   chip("#chip-input");chip("#chip-export");
   initInput();
   const h=location.hash.replace("#","");if(["input","export"].includes(h))go(h);
+  initAuth();
 });
+
+/* ============ AUTH (login email/password, mode cloud) ============ */
+function initAuth(){
+  if(DB.mode!=="cloud"||typeof firebase==="undefined"||!firebase.auth){$("#login").hidden=true;return;}
+  const auth=firebase.auth();
+  $("#login").hidden=false; // tampilkan sampai status auth diketahui
+  auth.onAuthStateChanged(u=>{
+    if(u){$("#login").hidden=true;$("#lg-out").hidden=false;$("#lg-pass").value="";}
+    else{$("#login").hidden=false;$("#lg-out").hidden=true;}
+  });
+  $("#lg-pass").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin();});
+  $("#lg-email").addEventListener("keydown",e=>{if(e.key==="Enter")$("#lg-pass").focus();});
+}
+async function doLogin(){
+  const email=($("#lg-email").value||"").trim(),pass=$("#lg-pass").value||"";
+  const err=$("#lg-err");err.className="err";err.style.textAlign="center";
+  if(!email||!pass){err.textContent="Isi email & password.";err.classList.add("show");return;}
+  const btn=$("#lg-btn");btn.disabled=true;const o=btn.textContent;btn.innerHTML='<span class="spin"></span> Masuk…';
+  try{await firebase.auth().signInWithEmailAndPassword(email,pass);}
+  catch(ex){const m={'auth/invalid-email':'Format email salah.','auth/user-not-found':'Akun tidak ditemukan.','auth/wrong-password':'Password salah.','auth/invalid-credential':'Email atau password salah.','auth/too-many-requests':'Terlalu banyak percobaan. Coba lagi nanti.','auth/network-request-failed':'Gagal konek. Cek internet.'}[ex.code]||'Gagal masuk. Coba lagi.';err.textContent=m;err.classList.add("show");}
+  finally{btn.disabled=false;btn.textContent=o;}
+}
+function logout(){if(typeof firebase!=="undefined"&&firebase.auth){firebase.auth().signOut();go("home");}}
 
 /* ============ INPUT ============ */
 function initInput(){
