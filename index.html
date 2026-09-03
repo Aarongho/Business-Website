@@ -42,25 +42,33 @@ button{font-family:inherit}
 .wrap{max-width:720px;margin:0 auto;padding:20px 18px 90px}
 
 /* ---------- theme toggle ---------- */
-.tglt{position:relative;width:64px;height:32px;border:none;border-radius:999px;cursor:pointer;padding:0;overflow:hidden;flex:0 0 auto;
-  background:linear-gradient(180deg,#9ad0ff,#4aa6ef);box-shadow:inset 0 2px 5px rgba(0,0,0,.22)}
-[data-theme="dark"] .tglt{background:linear-gradient(180deg,#2a3252,#131a30)}
-.tglt .stars{position:absolute;inset:0;opacity:0;transition:opacity .5s}
-[data-theme="dark"] .tglt .stars{opacity:1}
-.tglt .stars i{position:absolute;background:#fff;border-radius:50%}
-.tglt .cloud{position:absolute;background:#fff;border-radius:999px;opacity:.95;transition:opacity .45s,transform .45s}
-[data-theme="dark"] .tglt .cloud{opacity:0;transform:translateY(8px)}
-.tglt .cloud.a{width:22px;height:8px;bottom:4px;left:22px}
-.tglt .cloud.b{width:14px;height:6px;top:7px;left:30px;opacity:.75}
+.tglt{position:relative;width:66px;height:32px;border:none;border-radius:999px;cursor:pointer;padding:0;overflow:hidden;flex:0 0 auto;
+  background:linear-gradient(180deg,#8ec9ff,#57a6ef);box-shadow:inset 0 2px 6px rgba(0,0,0,.22)}
+[data-theme="dark"] .tglt{background:linear-gradient(180deg,#4b505d,#2c313b)}
+/* clouds (bar putih) di kanan — mode terang */
+.tglt .tbars{position:absolute;inset:0;opacity:1;transition:opacity .45s,transform .45s}
+[data-theme="dark"] .tglt .tbars{opacity:0;transform:translateX(7px)}
+.tglt .tbar{position:absolute;background:#fff;border-radius:999px}
+.tglt .tbar.a{width:15px;height:6px;top:8px;right:9px;background:rgba(255,255,255,.9)}
+.tglt .tbar.b{width:23px;height:7px;top:17px;right:5px;box-shadow:0 1px 3px rgba(30,80,140,.18)}
+/* bintang sparkle di kiri — mode gelap */
+.tglt .tstars{position:absolute;inset:0;opacity:0;transition:opacity .5s}
+[data-theme="dark"] .tglt .tstars{opacity:1}
+.tglt .spk{position:absolute;background:#fff;clip-path:polygon(50% 0%,58% 42%,100% 50%,58% 58%,50% 100%,42% 58%,0% 50%,42% 42%)}
+.tglt .spk.s1{width:10px;height:10px;top:5px;left:9px}
+.tglt .spk.s2{width:6px;height:6px;top:17px;left:20px;opacity:.9}
+.tglt .spk.s3{width:5px;height:5px;top:21px;left:8px;opacity:.8}
+.tglt .spk.s4{width:4px;height:4px;top:8px;left:23px;opacity:.85}
+/* knob: matahari (terang) / bulan (gelap) */
 .tglt .knob{position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;
-  background:radial-gradient(circle at 34% 32%,#fff4bf,#ffd23e);box-shadow:0 2px 6px rgba(0,0,0,.35),0 0 10px rgba(255,208,64,.6);
+  background:radial-gradient(circle at 40% 38%,#fff2b0,#ffd23e 72%);box-shadow:0 0 9px 2px rgba(255,206,64,.7),0 2px 4px rgba(0,0,0,.25);
   transition:transform .5s cubic-bezier(.7,-.2,.3,1.35),background .5s,box-shadow .5s}
-[data-theme="dark"] .tglt .knob{transform:translateX(32px);background:radial-gradient(circle at 36% 32%,#f7f9ff,#c9d1e8);box-shadow:0 2px 6px rgba(0,0,0,.5)}
-.tglt .knob i{position:absolute;border-radius:50%;background:#b9c1da;opacity:0;transition:opacity .5s}
+[data-theme="dark"] .tglt .knob{transform:translateX(34px);background:radial-gradient(circle at 40% 38%,#fbfcff,#c4ccdd 75%);box-shadow:0 2px 5px rgba(0,0,0,.5)}
+.tglt .knob i{position:absolute;border-radius:50%;background:#a7afc4;opacity:0;transition:opacity .5s}
 [data-theme="dark"] .tglt .knob i{opacity:1}
-.tglt .knob i.c1{width:6px;height:6px;top:5px;left:12px}
-.tglt .knob i.c2{width:4px;height:4px;top:13px;left:6px}
-.tglt .knob i.c3{width:3px;height:3px;top:6px;left:5px}
+.tglt .knob i.c1{width:6px;height:6px;top:6px;left:13px}
+.tglt .knob i.c2{width:4px;height:4px;top:14px;left:7px}
+.tglt .knob i.c3{width:3px;height:3px;top:5px;left:6px}
 
 /* ---------- top bar ---------- */
 .topbar{display:flex;align-items:center;gap:12px;padding:14px 18px;position:sticky;top:0;z-index:30;
@@ -226,8 +234,8 @@ td.r,th.r{text-align:right}
 <!-- reusable theme toggle markup cloned by JS -->
 <template id="tpl-toggle">
   <button class="tglt" aria-label="Ganti tema" onclick="toggleTheme()">
-    <span class="stars"><i style="width:2px;height:2px;top:8px;left:10px"></i><i style="width:2.5px;height:2.5px;top:16px;left:16px"></i><i style="width:2px;height:2px;top:20px;left:8px"></i><i style="width:1.5px;height:1.5px;top:6px;left:20px"></i></span>
-    <span class="cloud a"></span><span class="cloud b"></span>
+    <span class="tstars"><i class="spk s1"></i><i class="spk s2"></i><i class="spk s3"></i><i class="spk s4"></i></span>
+    <span class="tbars"><span class="tbar a"></span><span class="tbar b"></span></span>
     <span class="knob"><i class="c1"></i><i class="c2"></i><i class="c3"></i></span>
   </button>
 </template>
