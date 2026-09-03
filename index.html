@@ -42,33 +42,42 @@ button{font-family:inherit}
 .wrap{max-width:720px;margin:0 auto;padding:20px 18px 90px}
 
 /* ---------- theme toggle ---------- */
-.tglt{position:relative;width:66px;height:32px;border:none;border-radius:999px;cursor:pointer;padding:0;overflow:hidden;flex:0 0 auto;
-  background:linear-gradient(180deg,#8ec9ff,#57a6ef);box-shadow:inset 0 2px 6px rgba(0,0,0,.22)}
-[data-theme="dark"] .tglt{background:linear-gradient(180deg,#4b505d,#2c313b)}
-/* clouds (bar putih) di kanan — mode terang */
-.tglt .tbars{position:absolute;inset:0;opacity:1;transition:opacity .45s,transform .45s}
-[data-theme="dark"] .tglt .tbars{opacity:0;transform:translateX(7px)}
-.tglt .tbar{position:absolute;background:#fff;border-radius:999px}
-.tglt .tbar.a{width:15px;height:6px;top:8px;right:9px;background:rgba(255,255,255,.9)}
-.tglt .tbar.b{width:23px;height:7px;top:17px;right:5px;box-shadow:0 1px 3px rgba(30,80,140,.18)}
-/* bintang sparkle di kiri — mode gelap */
-.tglt .tstars{position:absolute;inset:0;opacity:0;transition:opacity .5s}
-[data-theme="dark"] .tglt .tstars{opacity:1}
-.tglt .spk{position:absolute;background:#fff;clip-path:polygon(50% 0%,58% 42%,100% 50%,58% 58%,50% 100%,42% 58%,0% 50%,42% 42%)}
-.tglt .spk.s1{width:10px;height:10px;top:5px;left:9px}
-.tglt .spk.s2{width:6px;height:6px;top:17px;left:20px;opacity:.9}
-.tglt .spk.s3{width:5px;height:5px;top:21px;left:8px;opacity:.8}
-.tglt .spk.s4{width:4px;height:4px;top:8px;left:23px;opacity:.85}
+.tglt{position:relative;width:88px;height:42px;border:none;border-radius:999px;cursor:pointer;padding:0;overflow:hidden;flex:0 0 auto;
+  background:radial-gradient(circle at 22% 50%,#a9d8ff,#6fb4f4 55%,#4f9bec);box-shadow:inset 0 2px 6px rgba(0,0,0,.22)}
+[data-theme="dark"] .tglt{background:radial-gradient(circle at 78% 50%,#454b5a,#2e333f 60%,#20242e)}
+/* awan 2 lapis melayang — mode terang */
+.tglt .tclouds{position:absolute;inset:0;width:100%;height:100%;opacity:1;transition:opacity .5s,transform .5s}
+[data-theme="dark"] .tglt .tclouds{opacity:0;transform:translateY(9px)}
+.tglt .cloud-front{animation:cldF 7s ease-in-out infinite}
+.tglt .cloud-back{animation:cldB 10s ease-in-out infinite}
+@keyframes cldF{0%,100%{transform:translateX(-1.6px)}50%{transform:translateX(2.6px)}}
+@keyframes cldB{0%,100%{transform:translateX(1.8px)}50%{transform:translateX(-2.2px)}}
+@media (prefers-reduced-motion:reduce){.tglt .cloud-front,.tglt .cloud-back{animation:none}}
+/* bintang sparkle di kiri — mode gelap (masuk/keluar halus + berkelip) */
+.tglt .tstars{position:absolute;inset:0;width:100%;height:100%;opacity:0;transform:scale(.7);transform-origin:24% 55%;transition:opacity .5s ease,transform .55s cubic-bezier(.2,.85,.3,1.25)}
+[data-theme="dark"] .tglt .tstars{opacity:1;transform:scale(1)}
+[data-theme="dark"] .tglt .tstars .stars{animation:stardrift 9s ease-in-out infinite}
+.tglt .tstars .stars>*{transform-box:fill-box;transform-origin:center}
+[data-theme="dark"] .tglt .tstars .stars>*{animation:twk 2.6s ease-in-out infinite}
+[data-theme="dark"] .tglt .tstars .stars>*:nth-child(2){animation-duration:1.9s;animation-delay:.7s}
+[data-theme="dark"] .tglt .tstars .stars>*:nth-child(3){animation-duration:3.2s;animation-delay:.3s}
+[data-theme="dark"] .tglt .tstars .stars>*:nth-child(4){animation-duration:2.3s;animation-delay:1.2s}
+[data-theme="dark"] .tglt .tstars .stars>*:nth-child(5){animation-duration:1.6s;animation-delay:.5s}
+[data-theme="dark"] .tglt .tstars .stars>*:nth-child(6){animation-duration:2.8s;animation-delay:1.5s}
+[data-theme="dark"] .tglt .tstars .stars>*:nth-child(7){animation-duration:2.1s;animation-delay:.9s}
+@keyframes twk{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.15;transform:scale(.55)}}
+@keyframes stardrift{0%,100%{transform:translate(0,0)}33%{transform:translate(1.6px,-1px)}66%{transform:translate(-1px,1.2px)}}
+@media (prefers-reduced-motion:reduce){[data-theme="dark"] .tglt .tstars .stars,[data-theme="dark"] .tglt .tstars .stars>*{animation:none}}
 /* knob: matahari (terang) / bulan (gelap) */
-.tglt .knob{position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;
-  background:radial-gradient(circle at 40% 38%,#fff2b0,#ffd23e 72%);box-shadow:0 0 9px 2px rgba(255,206,64,.7),0 2px 4px rgba(0,0,0,.25);
+.tglt .knob{position:absolute;top:5px;left:5px;width:32px;height:32px;border-radius:50%;
+  background:radial-gradient(circle at 42% 40%,#ffe680,#f7c531 78%);box-shadow:0 0 7px 1px rgba(255,206,64,.5),0 2px 5px rgba(0,0,0,.28);
   transition:transform .5s cubic-bezier(.7,-.2,.3,1.35),background .5s,box-shadow .5s}
-[data-theme="dark"] .tglt .knob{transform:translateX(34px);background:radial-gradient(circle at 40% 38%,#fbfcff,#c4ccdd 75%);box-shadow:0 2px 5px rgba(0,0,0,.5)}
+[data-theme="dark"] .tglt .knob{transform:translateX(46px);background:radial-gradient(circle at 40% 38%,#fbfcff,#c4ccdd 75%);box-shadow:0 2px 6px rgba(0,0,0,.5)}
 .tglt .knob i{position:absolute;border-radius:50%;background:#a7afc4;opacity:0;transition:opacity .5s}
 [data-theme="dark"] .tglt .knob i{opacity:1}
-.tglt .knob i.c1{width:6px;height:6px;top:6px;left:13px}
-.tglt .knob i.c2{width:4px;height:4px;top:14px;left:7px}
-.tglt .knob i.c3{width:3px;height:3px;top:5px;left:6px}
+.tglt .knob i.c1{width:25%;height:25%;top:24%;left:53%}
+.tglt .knob i.c2{width:16%;height:16%;top:57%;left:28%}
+.tglt .knob i.c3{width:12%;height:12%;top:20%;left:24%}
 
 /* ---------- top bar ---------- */
 .topbar{display:flex;align-items:center;gap:12px;padding:14px 18px;position:sticky;top:0;z-index:30;
@@ -266,8 +275,41 @@ td.r,th.r{text-align:right}
 <!-- reusable theme toggle markup cloned by JS -->
 <template id="tpl-toggle">
   <button class="tglt" aria-label="Ganti tema" onclick="toggleTheme()">
-    <span class="tstars"><i class="spk s1"></i><i class="spk s2"></i><i class="spk s3"></i><i class="spk s4"></i></span>
-    <span class="tbars"><span class="tbar a"></span><span class="tbar b"></span></span>
+    <svg class="tstars" viewBox="0 0 66 32" xmlns="http://www.w3.org/2000/svg">
+      <defs><filter id="sglow" x="-90%" y="-90%" width="280%" height="280%"><feGaussianBlur stdDeviation="1"/></filter></defs>
+      <g class="narcs" fill="none" stroke="#5b6580" stroke-width="2.2" opacity="0.45">
+        <circle cx="50" cy="16" r="15"/><circle cx="50" cy="16" r="23"/><circle cx="50" cy="16" r="31"/>
+      </g>
+      <g class="glow" fill="#ffffff" filter="url(#sglow)" opacity="0.5">
+        <path d="M14 6 L15.4 9.6 L19 11 L15.4 12.4 L14 16 L12.6 12.4 L9 11 L12.6 9.6 Z"/>
+        <path d="M22 16.4 L23 19 L25.6 20 L23 21 L22 23.6 L21 21 L18.4 20 L21 19 Z"/>
+      </g>
+      <g class="stars" fill="#ffffff">
+        <path d="M14 6 L15.4 9.6 L19 11 L15.4 12.4 L14 16 L12.6 12.4 L9 11 L12.6 9.6 Z"/>
+        <path d="M26 6 L26.9 8.1 L29 9 L26.9 9.9 L26 12 L25.1 9.9 L23 9 L25.1 8.1 Z"/>
+        <path d="M22 16.4 L23 19 L25.6 20 L23 21 L22 23.6 L21 21 L18.4 20 L21 19 Z"/>
+        <path d="M10 19.4 L10.8 21.2 L12.6 22 L10.8 22.8 L10 24.6 L9.2 22.8 L7.4 22 L9.2 21.2 Z"/>
+        <circle cx="33" cy="13" r="0.8"/><circle cx="18" cy="14" r="0.6"/><circle cx="30" cy="22" r="0.7"/>
+      </g>
+    </svg>
+    <svg class="tclouds" viewBox="0 0 66 32" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffffff"/><stop offset="0.55" stop-color="#f2f6ff"/><stop offset="1" stop-color="#cfe0fb"/>
+        </linearGradient>
+        <linearGradient id="cgb" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#dbe7fb"/><stop offset="1" stop-color="#b9cdf0"/>
+        </linearGradient>
+        <linearGradient id="cgf" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#fbfcff"/><stop offset="0.5" stop-color="#eef1f7"/><stop offset="1" stop-color="#cdd4e1"/>
+        </linearGradient>
+        <filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="0.55"/></filter>
+        <filter id="softer" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.3"/></filter>
+      </defs>
+      <g class="darcs" fill="none" stroke="#daf0ff" stroke-width="2.3" opacity="0.4"><circle cx="14" cy="16" r="19"/><circle cx="14" cy="16" r="27"/><circle cx="14" cy="16" r="35"/></g>
+      <g class="cloud-back" filter="url(#softer)" fill="url(#cgb)" opacity="0.5"><rect x="30" y="25" width="34" height="7"/><circle cx="38" cy="24" r="6.5"/><circle cx="48" cy="23" r="7"/><circle cx="57" cy="25" r="6"/></g>
+      <g class="cloud-front" filter="url(#soft)" fill="url(#cgf)"><rect x="26" y="28" width="40" height="4"/><circle cx="32" cy="28" r="6"/><circle cx="42" cy="26" r="7.5"/><circle cx="52" cy="28" r="6.5"/><circle cx="61" cy="29" r="5.5"/><circle cx="66" cy="30" r="4.5"/></g>
+    </svg>
     <span class="knob"><i class="c1"></i><i class="c2"></i><i class="c3"></i></span>
   </button>
 </template>
