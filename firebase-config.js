@@ -17,3 +17,6 @@ window.FIREBASE_CONFIG = {
 /* (Opsional) Kode akses sederhana supaya tidak sembarang orang bisa buka.
    Kosongkan ("") kalau tidak mau pakai. */
 window.APP_ACCESS_CODE = "";
+
+/* Password untuk membuka menu "Hapus Data". Ganti sesukamu. */
+window.DELETE_PASSWORD = "aaron";

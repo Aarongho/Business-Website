@@ -115,7 +115,23 @@ button{font-family:inherit}
 .lp-card.primary .ic{background:rgba(255,255,255,.2)}
 .lp-card.primary .arrow{color:rgba(255,255,255,.8)}
 .lp-card.secondary .ic{background:var(--brand-soft);color:var(--brand)}
+.lp-card.danger{margin-top:14px}
+.lp-card.danger .ic{background:var(--danger-soft);color:var(--danger)}
+.lp-card.danger h3{color:var(--danger)}
+.lp-card-full{width:100%}
 .lp-foot{position:relative;z-index:1;text-align:center;padding:0 24px 26px;font-size:12.5px;color:var(--faint)}
+
+/* delete view bits */
+.btn-danger{width:100%;border:none;border-radius:15px;padding:15px;font-size:15px;font-weight:800;color:#fff;background:var(--danger);cursor:pointer;box-shadow:0 12px 24px -14px var(--danger)}
+.btn-danger:hover{transform:translateY(-2px)}
+.del-list{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:14px}
+.del-row{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid var(--line)}
+.del-row:last-child{border-bottom:none}
+.del-row .d-main{flex:1;min-width:0}
+.del-row .d-main .t{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.del-row .d-main .s{font-size:12px;color:var(--muted);margin-top:2px}
+.trash{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);color:var(--danger);width:38px;height:38px;border-radius:11px;cursor:pointer;font-size:16px;display:grid;place-items:center}
+.trash:hover{background:var(--danger-soft);border-color:var(--danger)}
 
 /* ---------- page head ---------- */
 .pagehead{margin:4px 0 20px}
@@ -230,6 +246,10 @@ td.r,th.r{text-align:right}
 .login-card p{margin:0 0 22px;color:var(--muted);font-size:13.5px}
 .login-card input{margin-bottom:12px;text-align:left}
 .login-card .btn-brand{margin-top:6px}
+.btn-google{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:14px;font-weight:700;font-size:15px;cursor:pointer;margin-bottom:6px}
+.btn-google:hover{border-color:var(--brand)}
+.lg-or{display:flex;align-items:center;gap:12px;color:var(--faint);font-size:12px;margin:14px 0}
+.lg-or::before,.lg-or::after{content:"";flex:1;height:1px;background:var(--line)}
 .btn-logout{border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 14px;font-weight:700;font-size:13px;cursor:pointer}
 .btn-logout:hover{border-color:var(--brand);color:var(--brand)}
 
@@ -279,6 +299,11 @@ td.r,th.r{text-align:right}
           <h3>Export Database</h3><p>Lihat &amp; rekap data</p>
         </button>
       </div>
+      <button class="lp-card danger lp-card-full" onclick="askDelete()">
+        <div class="ic">🗑️</div>
+        <span class="arrow">→</span>
+        <h3>Hapus Data</h3><p>Perlu password • hati-hati, tidak bisa dibatalkan</p>
+      </button>
     </div>
     <div class="lp-foot" id="home-mode"></div>
   </div>
@@ -393,6 +418,29 @@ td.r,th.r{text-align:right}
   </div>
 </section>
 
+<!-- ============ DELETE ============ -->
+<section id="view-delete" class="view">
+  <div class="topbar">
+    <button class="back" onclick="go('home')">← Kembali</button>
+    <span class="brand">Hapus Data</span>
+    <span class="sp"></span>
+    <span id="tgl-delete"></span>
+    <span class="chip" id="chip-delete"></span>
+  </div>
+  <div class="wrap">
+    <div class="pagehead"><h2 style="color:var(--danger)">Hapus Data</h2><p>Pilih tanggal, lalu hapus data yang salah. Aksi ini permanen &amp; tidak bisa dibatalkan.</p></div>
+    <div class="card">
+      <div class="field" style="margin-bottom:12px">
+        <label>Pilih Tanggal</label>
+        <button type="button" class="datefield" id="d-date-btn"><span class="df-ic">📅</span><span class="df-val" id="d-date-val">—</span><span class="df-chev">›</span></button>
+        <input type="hidden" id="d-date" />
+      </div>
+      <button class="btn-brand" onclick="loadDelReport()">Tampilkan Data</button>
+    </div>
+    <div id="del-report"></div>
+  </div>
+</section>
+
 <!-- wheel picker sheet -->
 <div class="sheet" id="sheet" hidden>
   <div class="sheet-backdrop" onclick="Wheel.close()"></div>
@@ -419,6 +467,11 @@ td.r,th.r{text-align:right}
     <span class="mark"><svg viewBox="0 0 24 24" fill="none"><path d="M5 15L12 8l3 3 4-6" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 5h4v4" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
     <h2>Maju Terus Maju</h2>
     <p>Masuk untuk mengakses data penjualan.</p>
+    <button id="lg-google" class="btn-google" onclick="loginGoogle()">
+      <svg viewBox="0 0 48 48" width="18" height="18"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.6l6.7-6.7C35.6 2.4 30.2 0 24 0 14.6 0 6.4 5.4 2.5 13.3l7.8 6.1C12.2 13.3 17.6 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.1 5.3-4.6 7l7.1 5.5c4.2-3.9 6.6-9.6 6.6-16.5z"/><path fill="#FBBC05" d="M10.3 28.6c-.5-1.5-.8-3-.8-4.6s.3-3.1.8-4.6l-7.8-6.1C.9 16.5 0 20.1 0 24s.9 7.5 2.5 10.7l7.8-6.1z"/><path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.1-5.5c-2 1.3-4.6 2.1-8.1 2.1-6.4 0-11.8-3.8-13.7-9.4l-7.8 6.1C6.4 42.6 14.6 48 24 48z"/></svg>
+      Masuk dengan Google
+    </button>
+    <div class="lg-or"><span>atau pakai email</span></div>
     <input id="lg-email" type="email" autocomplete="username" placeholder="Email" />
     <input id="lg-pass" type="password" autocomplete="current-password" placeholder="Password" />
     <button id="lg-btn" class="btn-brand" onclick="doLogin()">Masuk</button>
@@ -452,7 +505,7 @@ function range(a,b){const r=[];for(let i=a;i<=b;i++)r.push(i);return r;}
 function toast(msg,type){const t=$("#toast");t.className="";t.innerHTML=msg;void t.offsetWidth;t.classList.add("show");if(type)t.classList.add(type);clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove("show"),2600);}
 
 /* ============ theme ============ */
-function mountToggles(){["#tgl-home","#tgl-input","#tgl-export"].forEach(id=>{const h=$(id);if(h&&!h.children.length)h.appendChild($("#tpl-toggle").content.cloneNode(true));});}
+function mountToggles(){["#tgl-home","#tgl-input","#tgl-export","#tgl-delete"].forEach(id=>{const h=$(id);if(h&&!h.children.length)h.appendChild($("#tpl-toggle").content.cloneNode(true));});}
 function toggleTheme(){const cur=document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light';const next=cur==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',next);try{localStorage.setItem('mtm_theme',next);}catch(e){}}
 
 /* ============ access gate ============ */
@@ -499,13 +552,22 @@ function go(name){
   v.style.animation="none";void v.offsetWidth;v.style.animation="";
   window.scrollTo(0,0);history.replaceState(null,"","#"+name);
   if(name==="export")initExport();
+  if(name==="delete")initDelete();
+}
+let _delUnlocked=false;
+function askDelete(){
+  const PW=window.DELETE_PASSWORD||"aaron";
+  const v=prompt("Masukkan password untuk membuka menu Hapus Data:");
+  if(v===null)return;
+  if(v===PW){_delUnlocked=true;go("delete");}
+  else toast("⚠️ Password salah","bad");
 }
 window.addEventListener("load",()=>{
   mountToggles();
   const modeTxt=DB.mode==="cloud"?"☁️ Tersinkron ke cloud — data dibagikan antar perangkat.":"📴 Mode offline (localStorage) — isi firebase-config.js agar tersinkron antar HP.";
   $("#home-mode").textContent=modeTxt;
   const chip=(id)=>{const c=$(id);c.className="chip "+DB.mode;c.textContent=DB.mode==="cloud"?"☁️ Cloud":"📴 Offline";};
-  chip("#chip-input");chip("#chip-export");
+  chip("#chip-input");chip("#chip-export");chip("#chip-delete");
   initInput();
   const h=location.hash.replace("#","");if(["input","export"].includes(h))go(h);
   initAuth();
@@ -531,6 +593,16 @@ async function doLogin(){
   try{await firebase.auth().signInWithEmailAndPassword(email,pass);}
   catch(ex){const m={'auth/invalid-email':'Format email salah.','auth/user-not-found':'Akun tidak ditemukan.','auth/wrong-password':'Password salah.','auth/invalid-credential':'Email atau password salah.','auth/too-many-requests':'Terlalu banyak percobaan. Coba lagi nanti.','auth/network-request-failed':'Gagal konek. Cek internet.'}[ex.code]||'Gagal masuk. Coba lagi.';err.textContent=m;err.classList.add("show");}
   finally{btn.disabled=false;btn.textContent=o;}
+}
+function loginGoogle(){
+  const err=$("#lg-err");err.className="err";err.style.textAlign="center";
+  try{
+    const prov=new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(prov).catch(ex=>{
+      const m={'auth/unauthorized-domain':'Domain website belum diizinkan di Firebase (tambahkan aarongho.github.io di Authentication → Settings → Authorized domains).','auth/popup-blocked':'Popup diblokir browser — izinkan popup lalu coba lagi.','auth/popup-closed-by-user':'Jendela Google ditutup sebelum selesai.','auth/operation-not-allowed':'Google sign-in belum diaktifkan di Firebase.'}[ex.code]||('Gagal masuk: '+(ex.message||ex.code));
+      err.textContent=m;err.classList.add("show");
+    });
+  }catch(e){err.textContent="Google sign-in belum siap. Coba muat ulang halaman.";err.classList.add("show");}
 }
 function logout(){if(typeof firebase!=="undefined"&&firebase.auth){firebase.auth().signOut();go("home");}}
 
@@ -638,6 +710,62 @@ async function exportCSV(scope){
   const blob=new Blob(["﻿"+lines.join("\r\n")],{type:"text/csv;charset=utf-8"});
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=scope==="all"?"maju-terus-semua-data.csv":`maju-terus-${_lastReport.date}.csv`;
   document.body.appendChild(a);a.click();a.remove();toast("✅ File CSV terunduh","ok");
+}
+
+/* ============ DELETE DATA ============ */
+function initDelete(){
+  if(!_delUnlocked){go("home");return;}
+  if(!$("#d-date").value)setDateField("#d-date-val","#d-date",todayWIB());
+  $("#d-date-btn").onclick=()=>Wheel.open({title:"Tanggal Data",date:$("#d-date").value,allowPast:true,onPick:(ds)=>{setDateField("#d-date-val","#d-date",ds);$("#del-report").innerHTML="";}});
+}
+async function loadDelReport(){
+  const date=$("#d-date").value;if(!date){toast("⚠️ Pilih tanggal dulu","bad");return;}
+  const rep=$("#del-report");rep.innerHTML='<div class="card"><div class="loading"><span class="spin" style="border-color:#ccc;border-top-color:#888"></span> Memuat…</div></div>';
+  const rows=await DB.getSalesByDate(date);
+  const iklan=await DB.getIklan(date);const month=monthOf(date);const bul=await DB.getBulanan(month)||{};
+  let html="";
+  // sales rows
+  if(!rows.length){html+=`<div class="card"><div class="empty"><span class="ic">🗒️</span>Tidak ada penjualan di ${tanggalIndo(date)}.</div></div>`;}
+  else{
+    html+='<div class="del-list">';
+    rows.forEach(r=>{
+      html+=`<div class="del-row"><div class="d-main"><div class="t">${r.namaProduk}</div><div class="s">${r.toko} • ${r.jenisProduk} • ${(r.jumlah||0)} • ${r.pengambil} • Laba ${rp(r.labaKotor)}</div></div><button class="trash" title="Hapus" onclick="delSale('${r.id}')">🗑️</button></div>`;
+    });
+    html+='</div>';
+    html+=`<button class="btn-danger" onclick="delAllDate()">Hapus SEMUA penjualan (${rows.length}) tanggal ini</button>`;
+  }
+  // biaya reset
+  const rowsCost=[];
+  if(iklan!=null)rowsCost.push(`<div class="del-row"><div class="d-main"><div class="t">Biaya Iklan — ${tanggalIndo(date)}</div><div class="s">${rp(iklan)}</div></div><button class="trash" title="Reset" onclick="resetIklan()">🗑️</button></div>`);
+  ["wrapping","plastik","lakban"].forEach(k=>{if(bul[k]!=null)rowsCost.push(`<div class="del-row"><div class="d-main"><div class="t">Biaya ${k[0].toUpperCase()+k.slice(1)} — bln ${month}</div><div class="s">${rp(bul[k])} (reset semua biaya bulan ini)</div></div><button class="trash" title="Reset" onclick="resetBulanan()">🗑️</button></div>`);});
+  if(rowsCost.length){html+=`<div style="margin-top:18px;font-weight:800;font-size:14px">Reset Biaya (kalau salah input)</div><div class="del-list" style="margin-top:8px">${rowsCost.join("")}</div>`;}
+  rep.innerHTML=html;
+  rep._date=date;rep._month=month;
+}
+async function delSale(id){
+  if(!confirm("Hapus penjualan ini? Tidak bisa dibatalkan."))return;
+  try{await DB.deleteSale(id);toast("✅ Data dihapus","ok");loadDelReport();}
+  catch(e){console.error(e);toast("⚠️ Gagal menghapus","bad");}
+}
+async function delAllDate(){
+  const date=$("#d-date").value;
+  const rows=await DB.getSalesByDate(date);
+  if(!rows.length)return;
+  if(!confirm(`Hapus SEMUA ${rows.length} penjualan tanggal ${tanggalIndo(date)}? Tidak bisa dibatalkan.`))return;
+  try{for(const r of rows)await DB.deleteSale(r.id);toast("✅ Semua data tanggal ini dihapus","ok");loadDelReport();}
+  catch(e){console.error(e);toast("⚠️ Gagal menghapus","bad");}
+}
+async function resetIklan(){
+  const date=$("#d-date").value;
+  if(!confirm("Reset biaya iklan tanggal ini? Setelah itu bisa diisi ulang."))return;
+  try{await DB.deleteIklan(date);toast("✅ Biaya iklan direset","ok");loadDelReport();}
+  catch(e){console.error(e);toast("⚠️ Gagal reset","bad");}
+}
+async function resetBulanan(){
+  const month=monthOf($("#d-date").value);
+  if(!confirm("Reset SEMUA biaya bulanan (wrapping, plastik, lakban) bulan ini? Setelah itu bisa diisi ulang."))return;
+  try{await DB.deleteBulanan(month);toast("✅ Biaya bulanan direset","ok");loadDelReport();}
+  catch(e){console.error(e);toast("⚠️ Gagal reset","bad");}
 }
 </script>
 </body>

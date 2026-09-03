@@ -40,6 +40,10 @@
       return rows;
     };
 
+    DB.deleteSale = (id) => fs.collection("sales").doc(id).delete();
+    DB.deleteIklan = (date) => fs.collection("iklan").doc(date).delete();
+    DB.deleteBulanan = (month) => fs.collection("bulanan").doc(month).delete();
+
     DB.getIklan = async (date) => {
       const d = await fs.collection("iklan").doc(date).get();
       return d.exists ? d.data().nilai : null;
@@ -90,6 +94,10 @@
       const d = load();
       return d.sales.slice().sort((a, b) => a.createdAt - b.createdAt);
     };
+    DB.deleteSale = async (id) => { const d = load(); d.sales = d.sales.filter((s) => s.id !== id); save(d); };
+    DB.deleteIklan = async (date) => { const d = load(); delete d.iklan[date]; save(d); };
+    DB.deleteBulanan = async (month) => { const d = load(); delete d.bulanan[month]; save(d); };
+
     DB.getIklan = async (date) => {
       const d = load();
       return date in d.iklan ? d.iklan[date] : null;
